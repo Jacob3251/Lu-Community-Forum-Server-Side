@@ -9,7 +9,7 @@ const ObjectId = require("mongodb").ObjectId;
 app.use(cors());
 app.use(express.json());
 
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.nookjda.mongodb.net/?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://lucfdb:wCWLK7BPmJnUQyIv@cluster0.nookjda.mongodb.net/?retryWrites=true&w=majority`;
 
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
@@ -21,7 +21,9 @@ async function run() {
   try {
     await client.connect();
     const user = { email: "cse_1832020032@lus.ac.bd" };
-
+    const reportedPostCollection = client
+      .db("GeneralPosts")
+      .collection("reportedUserPost");
     const userCollection = client.db("UserList").collection("users");
     const transportCollection = client
       .db("TransportNotice")
@@ -109,12 +111,18 @@ async function run() {
       const notices = await cursor.toArray();
       res.send(notices);
     });
+    // ==================== All general post releted api's ===================
+
+    // for adding new posts
     app.post("/generalposts", async (req, res) => {
       const newPost = req.body;
       const result = await GeneralPostCollection.insertOne(newPost);
       res.send(result);
       console.log("Added new post: ", newPost);
     });
+
+    // for getting all the general posts
+
     app.get("/generalposts", async (req, res) => {
       const query = {};
       const cursor = GeneralPostCollection.find(query);
@@ -122,6 +130,150 @@ async function run() {
       res.send(generalposts);
     });
 
+    // for getting single post from general post using query
+
+    app.get("/generalposts/:id", async (req, res) => {
+      const postId = req.params.id;
+      const query = { _id: ObjectId(postId) };
+      const singlePost = await GeneralPostCollection.findOne(query, {});
+      res.send(singlePost);
+    });
+
+    // for posting comments in single general post
+
+    app.put("/singlepost/:id", async (req, res) => {
+      const postId = req.params.id;
+      const commentBody = req.body;
+      const options = { upsert: true };
+      // console.log(commentBody);
+      const query = { _id: ObjectId(postId) };
+      const singlePost = await GeneralPostCollection.findOne(query, {});
+      const comments = singlePost.comments;
+      const newCommentArray = [...comments, commentBody];
+      // console.log(newCommentArray);
+      const updatedComments = {
+        $set: {
+          comments: newCommentArray,
+        },
+      };
+      const result = await GeneralPostCollection.updateOne(
+        query,
+        updatedComments,
+        options
+      );
+      const found = userCollection.find((u) => u.email === email);
+    });
+
+    // for updating like in single general post
+    app.put("/generalposts/:id", async (req, res) => {
+      const paramsId = req.params.id;
+      const [postId, email] = paramsId.split("++");
+      // console.log(postId);
+      const query = { _id: ObjectId(postId) };
+      // finding the post for which the like array has to be updated
+      const singlePost = await GeneralPostCollection.findOne(query, {});
+      const likes = singlePost.likes;
+      const options = { upsert: true };
+      let likesArray;
+      if (likes.length !== 0) {
+        const found = likes.find((u) => u === email);
+        if (found) {
+          console.log("email found");
+          likesArray = likes.filter((u) => u !== email);
+
+          const updatedLikes = {
+            $set: {
+              likes: likesArray,
+            },
+          };
+
+          const result = await GeneralPostCollection.updateOne(
+            query,
+            updatedLikes,
+            options
+          );
+        } else {
+          console.log("email not found");
+          likesArray = [...likes, email];
+          // console.log("updated", likesArray);
+          const updatedLikes = {
+            $set: {
+              likes: likesArray,
+            },
+          };
+
+          const result = await GeneralPostCollection.updateOne(
+            query,
+            updatedLikes,
+            options
+          );
+        }
+      }
+      if (likes.length === 0) {
+        const likesEmailArray = [email];
+        const updatedLikes = {
+          $set: {
+            likes: likesEmailArray,
+          },
+        };
+
+        const result = await GeneralPostCollection.updateOne(
+          query,
+          updatedLikes,
+          options
+        );
+      }
+      // console.log(singlePost);
+      res.send(singlePost);
+    });
+    // for reporting posts
+
+    app.post("/generalposts/reported", async (req, res) => {
+      const post = req.body;
+      console.log(post);
+      const result = await reportedPostCollection.insertOne(post);
+      res.send(result);
+    });
+
+    // for deleting single comments from the individual posts
+
+    app.put("/singlecomment/:id", async (req, res) => {
+      const postId = req.params.id;
+      const commentId = req.body.id;
+      const query = { _id: ObjectId(postId) };
+      // First finding the post by its id
+      const singlePost = await GeneralPostCollection.findOne(query, {});
+      const oldCommentsArray = singlePost.comments;
+      const updatedCommentArray = oldCommentsArray.filter(
+        (u) => u.commentId !== commentId
+      );
+      console.log("updated comment ", updatedCommentArray);
+      const newCommentArray = {
+        $set: {
+          comments: updatedCommentArray,
+        },
+      };
+      console.log("new COmment array ", updatedCommentArray);
+      const options = { upsert: true };
+      const result = await GeneralPostCollection.updateOne(
+        query,
+        newCommentArray
+      );
+      console.log(result);
+      res.send(result);
+      // res.send({ stat: "success" });
+    });
+
+    // for deleting single post by user
+
+    app.delete("/generalposts/:id", async (req, res) => {
+      const postId = req.params.id;
+      const query = { _id: ObjectId(postId) };
+      const result = await GeneralPostCollection.deleteOne(query);
+      res.send(result);
+    });
+
+    // Different post api
     app.get("/selectedpost", async (req, res) => {
       const query = {};
       const cursor = selectedPostUniversityCollection.find(query);
@@ -134,6 +286,7 @@ async function run() {
 
       res.send(all);
     });
+    // All user profile api link
     app.get("/users", async (req, res) => {
       const query = {};
       const cursor = studentCollection.find(query);
@@ -143,6 +296,22 @@ async function run() {
       const all = [studentList, teacherList];
 
       res.send(all);
+    });
+    // single user information api link using mail
+    app.get("/users/:id", async (req, res) => {
+      const id = req.params.id;
+      const emailreg = /^(cse|eee|ce|eng)[_]\d{10}[@]lus[.]ac[.]bd$/.test(id);
+      const query = { email: id };
+      if (emailreg) {
+        const student_cursor = await studentCollection.findOne(query);
+        res.send(student_cursor);
+        console.log(student_cursor);
+      } else {
+        const teacher_cursor = await teacherCollection.findOne(query);
+        res.send(teacher_cursor);
+        console.log(teacher_cursor);
+      }
+      console.log(id);
     });
   } finally {
     // client.close();
