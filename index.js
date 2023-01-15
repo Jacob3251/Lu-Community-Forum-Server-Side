@@ -138,7 +138,15 @@ async function run() {
       const singlePost = await GeneralPostCollection.findOne(query, {});
       res.send(singlePost);
     });
+    // for getting all the posts of a single user in a array
 
+    app.get("/allSingleUserPost/:id",async (req,res)=>{
+      const userEmail = req.params.id;
+      const query = {email: userEmail};
+      const cursor =  GeneralPostCollection.find(query,{});
+      const allSingleUserPost = await cursor.toArray();
+      res.send(allSingleUserPost);
+    })
     // for posting comments in single general post
 
     app.put("/singlepost/:id", async (req, res) => {
