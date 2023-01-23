@@ -140,13 +140,13 @@ async function run() {
     });
     // for getting all the posts of a single user in a array
 
-    app.get("/allSingleUserPost/:id",async (req,res)=>{
+    app.get("/allSingleUserPost/:id", async (req, res) => {
       const userEmail = req.params.id;
-      const query = {email: userEmail};
-      const cursor =  GeneralPostCollection.find(query,{});
+      const query = { email: userEmail };
+      const cursor = GeneralPostCollection.find(query, {});
       const allSingleUserPost = await cursor.toArray();
       res.send(allSingleUserPost);
-    })
+    });
     // for posting comments in single general post
 
     app.put("/singlepost/:id", async (req, res) => {
@@ -294,6 +294,211 @@ async function run() {
 
       res.send(all);
     });
+    // Temporaray api for testing********************-----------------*********************------------------
+    app.get("/selectedTech/cse_1832020032@lus.ac.bd", async (req, res) => {
+      const allData = [
+        {
+          id: 1,
+          name: "Md. Ebrahim Hossain",
+          designation: "Assistant Professor",
+          photoURL:
+            "https://www.lus.ac.bd/wp-content/uploads/2020/01/Ebrahim-Hossain.jpg",
+          courses: [
+            "Computer Network",
+            "Data Communication",
+            "Digital Signal Processing",
+            "Computer Security and Cryptography",
+            "Distributed System",
+            "System Analysis and Design",
+            "Computer Graphics and Image processing",
+            "Operating System Lab",
+            "C programming Lab",
+            "Computer Graphics Lab",
+            "Computer Network Lab",
+          ],
+        },
+        {
+          id: 2,
+          name: "Adil Ahmed Chowdhury",
+          designation: "Lecturer",
+          photoURL:
+            "https://www.lus.ac.bd/wp-content/uploads/2020/07/adil-png.png",
+          courses: [
+            "Java Programming (Theory & Sessional)",
+            "Cellular Mobile And Satellite Communication",
+            "Discrete Mathematics",
+            "Theory of Computation",
+            "Data Communication",
+            "Database Management System (Theory & Sessional)",
+            "Computer Security and Cryptography",
+            "Object-Oriented Programming (Theory & Sessional)",
+            "Compiler Design and Construction (Theory & Sessional)",
+            "Numerical Methods (Sessional)",
+            "Introduction to Computing Sessional(Python)",
+            "Structured Programming",
+          ],
+        },
+        {
+          id: 3,
+          name: "Md. Jamaner Rahaman",
+          designation: "Lecturer",
+          photoURL:
+            "https://www.lus.ac.bd/wp-content/uploads/2021/02/Capture.png",
+          courses: [
+            "Structured Programming (C)",
+            "Object-oriented programming (Java)",
+            "Introduction to Computers (Python)",
+            "Artificial Intelligence",
+            "Digital Signal Processing",
+            "Database Management System",
+            "Microprocessor, Assembly Language and Computer Interfacing",
+            "Theory of Computation",
+            "Engineering Drawing",
+          ],
+        },
+        {
+          id: 4,
+          name: "Kazi Md. Jahid Hasan",
+          designation: "Assistant Professor(Mathematics)",
+          photoURL:
+            "https://www.lus.ac.bd/wp-content/uploads/2020/06/jahid-1-scaled.jpg",
+          courses: [
+            "Differential and Integral Calculus",
+            "Differential Equation and Fourier Analysis",
+            "Coordinate Geometry and Vector Analysis",
+            "Linear Algebra and Complex Analysis",
+            "Laplace Transform",
+          ],
+        },
+        {
+          id: 5,
+          name: "Arafat Habib Quraishi",
+          designation: "Lecturer",
+          photoURL:
+            "https://www.lus.ac.bd/wp-content/uploads/2022/02/217A8685-scaled.jpg",
+          courses: [
+            "Computer Programming",
+            "Data Structures",
+            "Object Oriented Programming",
+            "Database Management System",
+            "Discrete Mathematics",
+            "Computer Networks",
+            "Computer Architecture and Design",
+            "Software Engineering and Information System Design",
+            "Digital Electronics",
+            "Management Information System",
+            "Data Warehousing and Data Mining",
+            "Introduction to Computers",
+            "Internet and E-Commerce",
+          ],
+        },
+        {
+          id: 6,
+          name: "Sabia Akter Bhuiyan",
+          designation: "Assistant Professor",
+          photoURL:
+            "https://www.lus.ac.bd/wp-content/uploads/2019/11/sabia_akter.jpg",
+          courses: [
+            "Differential and Integral Calculus",
+            "Differential Equation and Fourier Analysis",
+            "Coordinate Geometry and Vector Analysis",
+            "Linear Algebra and Complex Analysis",
+            "Laplace Transform",
+            "Business Mathematics",
+            "Probability and Statistics",
+            "Discrete Mathematics",
+          ],
+        },
+        {
+          id: 7,
+          name: "Rana M Luthfur Rahman Pir",
+          designation: "Assistant Professor Proctor (Acting), LU",
+          photoURL:
+            "https://www.lus.ac.bd/wp-content/uploads/2022/03/465386_10150677640915709_891318216_o.jpg",
+          courses: [
+            "Computer Architecture and Design",
+            "Computer Networks",
+            "Data Warehousing and Data Mining",
+            "Computer Security and Cryptography",
+            "Management Information System",
+            "System Analysis and Design",
+            "Computer Peripherals and Interfacing",
+            "Software Engineering",
+            "Advanced Software Engineering",
+            "Human-Computer Interaction",
+            "Computer Peripherals and Interfacing",
+            "Data Communication",
+          ],
+        },
+        {
+          id: 8,
+          name: "Prof. Dr. AS. Sikder",
+          designation: "Professor",
+          photoURL: "https://www.lus.ac.bd/wp-content/uploads/2022/11/pic.jpg",
+          courses: [
+            "Software Engineering",
+            "System Analysis & Design",
+            "Database Management System",
+            "Advanced Computer Networks",
+            "Advanced Operating System",
+            "Cryptography & Network Security",
+            "Cyber Security & Ethical Hacking",
+            "Information Systems Security",
+            "Cloud Computing",
+            "Advanced Algorithms",
+            "Neural Network & Fuzzy Logic",
+            "Machine Learning",
+            "Big Data & Data Mining",
+            "Data Analytics",
+            "Business Analytics",
+            "Management Information System",
+          ],
+        },
+        {
+          id: 9,
+          name: "Syeda Tamanna Alam Monisha",
+          designation: "Lecturer",
+          photoURL:
+            "https://www.lus.ac.bd/wp-content/uploads/2019/11/Syeda-Tajmanna-Alam-Monisha.jpg",
+          courses: [
+            "Computer Security and Cryptography",
+            "Compiler Design and Construction",
+            "Digital Signal Processing",
+            "Artificial Intelligence",
+            "Numerical Methods",
+            "Data Communication",
+            "Database Management System",
+            "Object-Oriented Programming",
+            "Data Structure",
+            "Discrete Mathematics",
+          ],
+        },
+      ];
+      const id = "cse_1832020032@lus.ac.bd";
+      const emailreg = /^(cse|eee|ce|eng)[_]\d{10}[@]lus[.]ac[.]bd$/.test(id);
+      const query = { email: id };
+      if (emailreg) {
+        const studentCursor = await studentCollection.findOne(query);
+
+        // console.log(student_cursor);
+        // let filtered = allData.filter((item) =>
+        //   studentCursor.subcribedTeachers.includes(item.id)
+        // );
+        const subscribedId = studentCursor.subscribedTeachers;
+        let filteredData = allData.filter(
+          (item) => subscribedId.indexOf(item.id) === -1
+        );
+
+        // console.log(filteredData);
+        const y = studentCursor.subscribedTeachers.map((subscribedId) =>
+          allData.find((item) => item.id === subscribedId)
+        );
+        res.send({ subcribed: y, notSubcribed: filteredData });
+      }
+      // const all = { allTeacherData: allData ,  };
+
+      // res.send(all);
+    });
     // All user profile api link
     app.get("/users", async (req, res) => {
       const query = {};
@@ -320,6 +525,86 @@ async function run() {
         console.log(teacher_cursor);
       }
       console.log(id);
+    });
+    // Subcribed Teacher: api
+
+    // admin panel stat provider api ======================== ++++++++++++++++++++++++++++
+
+    app.get("/showstats", async (req, res) => {
+      const query = {};
+      const reportedCursor = reportedPostCollection.find(query);
+      const reportedPosts = await reportedCursor.toArray();
+
+      const transportationCursor = transportCollection.find(query);
+      const transportationPosts = await transportationCursor.toArray();
+
+      const generalPostCursor = GeneralPostCollection.find(query);
+      const generalPosts = await generalPostCursor.toArray();
+      const selectedUniPostCursor =
+        selectedPostUniversityCollection.find(query);
+      const selectedDeptPostCursor =
+        selectedPostDepartmentCollection.find(query);
+      const selectedTeacherPostCursor =
+        selectedPostTeacherCollection.find(query);
+      const selectedUniPosts = await selectedUniPostCursor.toArray();
+      const selectedDeptPosts = await selectedDeptPostCursor.toArray();
+      const selectedTeacherPosts = await selectedTeacherPostCursor.toArray();
+      const studentCursor = studentCollection.find(query);
+      const teacherCursor = teacherCollection.find(query);
+      const students = await studentCursor.toArray();
+      const teachers = await teacherCursor.toArray();
+      const data = [
+        {
+          students: students.length,
+          teachers: teachers.length,
+        },
+        [
+          {
+            title: "General Posts",
+            data: generalPosts,
+            id: 1,
+            length: generalPosts.length,
+          },
+          {
+            title: "Reported Posts",
+            data: reportedPosts,
+            id: 2,
+            length: reportedPosts.length,
+          },
+          {
+            title: "Transportation Posts",
+            data: transportationPosts,
+            id: 3,
+            length: transportationPosts.length,
+          },
+          {
+            title: "University Specific Posts",
+            data: selectedUniPosts,
+            id: 4,
+            length: selectedUniPosts.length,
+          },
+          {
+            title: "Teacher's Specific Posts",
+            data: selectedTeacherPosts,
+            id: 5,
+            length: selectedTeacherPosts.length,
+          },
+          {
+            title: "Department Specific Posts",
+            data: selectedDeptPosts,
+            id: 6,
+            length: selectedDeptPosts.length,
+          },
+        ],
+      ];
+      // console.log("reported post", reportedPosts.length);
+      // console.log("transportation post", transportationPosts.length);
+      // console.log("general post", generalPosts.length);
+      // console.log("selected uni post", selectedUniPosts.length);
+      // console.log("selected dept post", selectedDeptPosts.length);
+      // console.log("selected teacher post", selectedTeacherPosts.length);
+      // console.log("data", data);
+      res.send(data);
     });
   } finally {
     // client.close();
