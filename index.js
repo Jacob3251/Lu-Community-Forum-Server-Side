@@ -98,6 +98,66 @@ async function run() {
       // });
       // ===============================================================================
     });
+    // api's for specific teacher posts
+
+    // get api for receiving teacherpost
+    app.get("/selectedpost/teacherpost", async (req, res) => {
+      const query = {};
+      const teacherPostCursor = selectedPostTeacherCollection.find(query);
+      const teacherPosts = await teacherPostCursor.toArray();
+
+      res.send(teacherPosts);
+    });
+
+    // del api for deleting individual teacherpost
+
+    app.delete("/selectedpost/teacherpost/:id", async (req, res) => {
+      const postId = req.params.id;
+      const query = { _id: ObjectId(postId) };
+      const result = await selectedPostTeacherCollection.deleteOne(query);
+      console.log("delete result", result);
+      res.send(result);
+    });
+
+    // api's for specific university posts
+    app.get("/selectedpost/unipost", async (req, res) => {
+      const query = {};
+      const universityPostCursor = selectedPostUniversityCollection.find(query);
+      const uniPosts = await universityPostCursor.toArray();
+
+      res.send(uniPosts);
+    });
+
+    // api's for specfic university post deletion
+
+    app.delete("/selectedpost/unipost/:id", async (req, res) => {
+      const postId = req.params.id;
+      const query = { _id: ObjectId(postId) };
+      const result = await selectedPostUniversityCollection.deleteOne(query);
+      console.log("delete result", result);
+      res.send(result);
+    });
+
+    // api's for specific department posts
+    app.get("/selectedpost/deptpost", async (req, res) => {
+      const query = {};
+      const deptPostCursor = selectedPostDepartmentCollection.find(query);
+      const deptPosts = await deptPostCursor.toArray();
+
+      res.send(deptPosts);
+    });
+
+    // api for deleting individual specific department posts
+
+    app.delete("/selectedpost/deptpost/:id", async (req, res) => {
+      const postId = req.params.id;
+      const query = { _id: ObjectId(postId) };
+      const result = await selectedPostDepartmentCollection.deleteOne(query);
+      console.log("delete result", result);
+      res.send(result);
+    });
+
+    // =============================================
     // ============================ have to be uncommented to dynacally add data(end)
     app.post("/transportnotice", async (req, res) => {
       const newNotice = req.body;
@@ -186,7 +246,7 @@ async function run() {
       if (likes.length !== 0) {
         const found = likes.find((u) => u === email);
         if (found) {
-          console.log("email found");
+          // console.log("email found");
           likesArray = likes.filter((u) => u !== email);
 
           const updatedLikes = {
@@ -201,7 +261,7 @@ async function run() {
             options
           );
         } else {
-          console.log("email not found");
+          // console.log("email not found");
           likesArray = [...likes, email];
           // console.log("updated", likesArray);
           const updatedLikes = {
@@ -238,7 +298,7 @@ async function run() {
 
     app.post("/generalposts/reported", async (req, res) => {
       const post = req.body;
-      console.log(post);
+      // console.log(post);
       const result = await reportedPostCollection.insertOne(post);
       res.send(result);
     });
@@ -255,13 +315,13 @@ async function run() {
       const updatedCommentArray = oldCommentsArray.filter(
         (u) => u.commentId !== commentId
       );
-      console.log("updated comment ", updatedCommentArray);
+      // console.log("updated comment ", updatedCommentArray);
       const newCommentArray = {
         $set: {
           comments: updatedCommentArray,
         },
       };
-      console.log("new COmment array ", updatedCommentArray);
+      // console.log("new COmment array ", updatedCommentArray);
       const options = { upsert: true };
       const result = await GeneralPostCollection.updateOne(
         query,
@@ -518,13 +578,13 @@ async function run() {
       if (emailreg) {
         const student_cursor = await studentCollection.findOne(query);
         res.send(student_cursor);
-        console.log(student_cursor);
+        // console.log(student_cursor);
       } else {
         const teacher_cursor = await teacherCollection.findOne(query);
         res.send(teacher_cursor);
-        console.log(teacher_cursor);
+        // console.log(teacher_cursor);
       }
-      console.log(id);
+      // console.log(id);
     });
     // Subcribed Teacher: api
 
