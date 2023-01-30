@@ -341,7 +341,7 @@ async function run() {
       res.send(result);
     });
 
-    // Different post api
+    // Different posts api
     app.get("/selectedpost", async (req, res) => {
       const query = {};
       const cursor = selectedPostUniversityCollection.find(query);
@@ -535,30 +535,12 @@ async function run() {
         },
       ];
       const id = "cse_1832020032@lus.ac.bd";
-      const emailreg = /^(cse|eee|ce|eng)[_]\d{10}[@]lus[.]ac[.]bd$/.test(id);
-      const query = { email: id };
-      if (emailreg) {
-        const studentCursor = await studentCollection.findOne(query);
-
-        // console.log(student_cursor);
-        // let filtered = allData.filter((item) =>
-        //   studentCursor.subcribedTeachers.includes(item.id)
-        // );
-        const subscribedId = studentCursor.subscribedTeachers;
-        let filteredData = allData.filter(
-          (item) => subscribedId.indexOf(item.id) === -1
-        );
-
-        // console.log(filteredData);
-        const y = studentCursor.subscribedTeachers.map((subscribedId) =>
-          allData.find((item) => item.id === subscribedId)
-        );
-        res.send({ subcribed: y, notSubcribed: filteredData });
-      }
-      // const all = { allTeacherData: allData ,  };
-
-      // res.send(all);
+      res.send(allData);
     });
+    // const all = { allTeacherData: allData ,  };
+
+    // res.send(all);
+
     // All user profile api link
     app.get("/users", async (req, res) => {
       const query = {};
@@ -588,6 +570,83 @@ async function run() {
     });
     // Subcribed Teacher: api
 
+    //  Api for updating the bio
+
+    app.put("/profilebio", async (req, res) => {
+      const requestedbody = req.body;
+      const filter = { email: requestedbody.profileData.email };
+      const options = { upsert: true };
+      if (requestedbody.profileData.userType === 1) {
+        const updatedBioPart = {
+          $set: {
+            bio: requestedbody.bio,
+          },
+        };
+        const result = await studentCollection.updateOne(
+          filter,
+          updatedBioPart,
+          options
+        );
+        res.send(result);
+      } else {
+        const updatedBioPart = {
+          $set: {
+            bio: requestedbody.bio,
+          },
+        };
+        const result = await teacherCollection.updateOne(
+          filter,
+          updatedBioPart,
+          options
+        );
+        res.send(result);
+      }
+    });
+    // Api for updating users profile and cover pictures
+    // ============ Profile Pic Modify Api
+    app.put("/profilepic/modify", async (req, res) => {
+      const requestedbody = req.body;
+      console.log("profile pic api hit", requestedbody);
+      const filter = { email: requestedbody.profileData.email };
+      const options = { upsert: true };
+      if (requestedbody.profileData.userType === 1) {
+        const foundUser = await studentCollection.findOne(filter, {});
+        const updatedPart = {
+          $set: {
+            profileImgLink: requestedbody.profileImgLink,
+          },
+        };
+        const result = await studentCollection.updateOne(
+          filter,
+          updatedPart,
+          options
+        );
+        res.send(result);
+        console.log(result);
+      }
+    });
+    // ============= Cover Pic Modify Api
+    app.put("/coverpic/modify", async (req, res) => {
+      const requestedbody = req.body;
+      console.log("cover pic api hit", requestedbody);
+      const filter = { email: requestedbody.profileData.email };
+      const options = { upsert: true };
+      if (requestedbody.profileData.userType === 1) {
+        const foundUser = await studentCollection.findOne(filter, {});
+        const updatedPart = {
+          $set: {
+            coverImgLink: requestedbody.coverImgLink,
+          },
+        };
+        const result = await studentCollection.updateOne(
+          filter,
+          updatedPart,
+          options
+        );
+        res.send(result);
+        console.log(result);
+      }
+    });
     // admin panel stat provider api ======================== ++++++++++++++++++++++++++++
 
     app.get("/showstats", async (req, res) => {
