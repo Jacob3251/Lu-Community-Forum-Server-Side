@@ -569,6 +569,275 @@ async function run() {
       // console.log(id);
     });
     // Subcribed Teacher: api
+    app.put("/subscribedteachers/:id", async (req, res) => {
+      const [userEmail, userType] = req.params.id.split("***");
+      const requestedbody = req.body;
+      const filter = { email: userEmail };
+      const options = { upsert: true };
+      const query = { email: userEmail };
+      const UserData = await studentCollection.findOne(query, {});
+
+      if (userType == 1) {
+        if (!UserData.subscribedTeachers) {
+          const updatedPart = {
+            $set: {
+              subscribedTeachers: [requestedbody.selectedId],
+            },
+          };
+          const result = await studentCollection.updateOne(
+            filter,
+            updatedPart,
+            options
+          );
+          res.send(result);
+        } else {
+          const modifiedArr = [
+            ...UserData.subscribedTeachers,
+            requestedbody.selectedId,
+          ];
+          const updatedPart = {
+            $set: {
+              subscribedTeachers: modifiedArr,
+            },
+          };
+          const result = await studentCollection.updateOne(
+            filter,
+            updatedPart,
+            options
+          );
+          res.send(result);
+        }
+      }
+    });
+    app.put("/subscribedteachersSub/:id", async (req, res) => {
+      const [userEmail, userType] = req.params.id.split("***");
+      const requestedbody = req.body;
+      const filter = { email: userEmail };
+      const options = { upsert: true };
+      const query = { email: userEmail };
+      const UserData = await studentCollection.findOne(query, {});
+
+      if (userType == 1) {
+        if (UserData.subscribedTeachers) {
+          const filtered = UserData.subscribedTeachers.filter(
+            (u) => u != requestedbody.selectedId
+          );
+          const updatedPart = {
+            $set: {
+              subscribedTeachers: filtered,
+            },
+          };
+          const result = await studentCollection.updateOne(
+            filter,
+            updatedPart,
+            options
+          );
+          res.send(result);
+        }
+      }
+    });
+    app.get("/subscribedteachers/:id", async (req, res) => {
+      const [userEmail, userType] = req.params.id.split("***");
+      // console.log("userEmail ", userEmail, "userType", userType);
+      if (userType == 1) {
+        // console.log("entered");
+        const query = { email: userEmail };
+        const result = await studentCollection.findOne(query, {});
+        const allData = [
+          {
+            id: 1,
+            name: "Md. Ebrahim Hossain",
+            designation: "Assistant Professor",
+            photoURL:
+              "https://www.lus.ac.bd/wp-content/uploads/2020/01/Ebrahim-Hossain.jpg",
+            courses: [
+              "Computer Network",
+              "Data Communication",
+              "Digital Signal Processing",
+              "Computer Security and Cryptography",
+              "Distributed System",
+              "System Analysis and Design",
+              "Computer Graphics and Image processing",
+              "Operating System Lab",
+              "C programming Lab",
+              "Computer Graphics Lab",
+              "Computer Network Lab",
+            ],
+          },
+          {
+            id: 2,
+            name: "Adil Ahmed Chowdhury",
+            designation: "Lecturer",
+            photoURL:
+              "https://www.lus.ac.bd/wp-content/uploads/2020/07/adil-png.png",
+            courses: [
+              "Java Programming (Theory & Sessional)",
+              "Cellular Mobile And Satellite Communication",
+              "Discrete Mathematics",
+              "Theory of Computation",
+              "Data Communication",
+              "Database Management System (Theory & Sessional)",
+              "Computer Security and Cryptography",
+              "Object-Oriented Programming (Theory & Sessional)",
+              "Compiler Design and Construction (Theory & Sessional)",
+              "Numerical Methods (Sessional)",
+              "Introduction to Computing Sessional(Python)",
+              "Structured Programming",
+            ],
+          },
+          {
+            id: 3,
+            name: "Md. Jamaner Rahaman",
+            designation: "Lecturer",
+            photoURL:
+              "https://www.lus.ac.bd/wp-content/uploads/2021/02/Capture.png",
+            courses: [
+              "Structured Programming (C)",
+              "Object-oriented programming (Java)",
+              "Introduction to Computers (Python)",
+              "Artificial Intelligence",
+              "Digital Signal Processing",
+              "Database Management System",
+              "Microprocessor, Assembly Language and Computer Interfacing",
+              "Theory of Computation",
+              "Engineering Drawing",
+            ],
+          },
+          {
+            id: 4,
+            name: "Kazi Md. Jahid Hasan",
+            designation: "Assistant Professor(Mathematics)",
+            photoURL:
+              "https://www.lus.ac.bd/wp-content/uploads/2020/06/jahid-1-scaled.jpg",
+            courses: [
+              "Differential and Integral Calculus",
+              "Differential Equation and Fourier Analysis",
+              "Coordinate Geometry and Vector Analysis",
+              "Linear Algebra and Complex Analysis",
+              "Laplace Transform",
+            ],
+          },
+          {
+            id: 5,
+            name: "Arafat Habib Quraishi",
+            designation: "Lecturer",
+            photoURL:
+              "https://www.lus.ac.bd/wp-content/uploads/2022/02/217A8685-scaled.jpg",
+            courses: [
+              "Computer Programming",
+              "Data Structures",
+              "Object Oriented Programming",
+              "Database Management System",
+              "Discrete Mathematics",
+              "Computer Networks",
+              "Computer Architecture and Design",
+              "Software Engineering and Information System Design",
+              "Digital Electronics",
+              "Management Information System",
+              "Data Warehousing and Data Mining",
+              "Introduction to Computers",
+              "Internet and E-Commerce",
+            ],
+          },
+          {
+            id: 6,
+            name: "Sabia Akter Bhuiyan",
+            designation: "Assistant Professor",
+            photoURL:
+              "https://www.lus.ac.bd/wp-content/uploads/2019/11/sabia_akter.jpg",
+            courses: [
+              "Differential and Integral Calculus",
+              "Differential Equation and Fourier Analysis",
+              "Coordinate Geometry and Vector Analysis",
+              "Linear Algebra and Complex Analysis",
+              "Laplace Transform",
+              "Business Mathematics",
+              "Probability and Statistics",
+              "Discrete Mathematics",
+            ],
+          },
+          {
+            id: 7,
+            name: "Rana M Luthfur Rahman Pir",
+            designation: "Assistant Professor Proctor (Acting), LU",
+            photoURL:
+              "https://www.lus.ac.bd/wp-content/uploads/2022/03/465386_10150677640915709_891318216_o.jpg",
+            courses: [
+              "Computer Architecture and Design",
+              "Computer Networks",
+              "Data Warehousing and Data Mining",
+              "Computer Security and Cryptography",
+              "Management Information System",
+              "System Analysis and Design",
+              "Computer Peripherals and Interfacing",
+              "Software Engineering",
+              "Advanced Software Engineering",
+              "Human-Computer Interaction",
+              "Computer Peripherals and Interfacing",
+              "Data Communication",
+            ],
+          },
+          {
+            id: 8,
+            name: "Prof. Dr. AS. Sikder",
+            designation: "Professor",
+            photoURL:
+              "https://www.lus.ac.bd/wp-content/uploads/2022/11/pic.jpg",
+            courses: [
+              "Software Engineering",
+              "System Analysis & Design",
+              "Database Management System",
+              "Advanced Computer Networks",
+              "Advanced Operating System",
+              "Cryptography & Network Security",
+              "Cyber Security & Ethical Hacking",
+              "Information Systems Security",
+              "Cloud Computing",
+              "Advanced Algorithms",
+              "Neural Network & Fuzzy Logic",
+              "Machine Learning",
+              "Big Data & Data Mining",
+              "Data Analytics",
+              "Business Analytics",
+              "Management Information System",
+            ],
+          },
+          {
+            id: 9,
+            name: "Syeda Tamanna Alam Monisha",
+            designation: "Lecturer",
+            photoURL:
+              "https://www.lus.ac.bd/wp-content/uploads/2019/11/Syeda-Tajmanna-Alam-Monisha.jpg",
+            courses: [
+              "Computer Security and Cryptography",
+              "Compiler Design and Construction",
+              "Digital Signal Processing",
+              "Artificial Intelligence",
+              "Numerical Methods",
+              "Data Communication",
+              "Database Management System",
+              "Object-Oriented Programming",
+              "Data Structure",
+              "Discrete Mathematics",
+            ],
+          },
+        ];
+        const subscribedTeachers = result.subscribedTeachers;
+        const filteredData = allData.filter((obj) =>
+          subscribedTeachers.includes(obj.id)
+        );
+        const notFilteredData = allData.filter(
+          (obj) => !subscribedTeachers.includes(obj.id)
+        );
+        const finalData = {
+          subscribed: filteredData,
+          notsubscribed: notFilteredData,
+        };
+        res.send(finalData);
+      } else {
+        res.send({ status: "Not applicable" });
+      }
+    });
 
     //  Api for updating the bio
 
