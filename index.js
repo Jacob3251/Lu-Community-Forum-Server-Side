@@ -648,6 +648,7 @@ async function run() {
             id: 1,
             name: "Md. Ebrahim Hossain",
             designation: "Assistant Professor",
+            teacherCode: "",
             photoURL:
               "https://www.lus.ac.bd/wp-content/uploads/2020/01/Ebrahim-Hossain.jpg",
             courses: [
@@ -668,6 +669,7 @@ async function run() {
             id: 2,
             name: "Adil Ahmed Chowdhury",
             designation: "Lecturer",
+            teacherCode: "",
             photoURL:
               "https://www.lus.ac.bd/wp-content/uploads/2020/07/adil-png.png",
             courses: [
@@ -689,6 +691,7 @@ async function run() {
             id: 3,
             name: "Md. Jamaner Rahaman",
             designation: "Lecturer",
+            teacherCode: "",
             photoURL:
               "https://www.lus.ac.bd/wp-content/uploads/2021/02/Capture.png",
             courses: [
@@ -707,6 +710,7 @@ async function run() {
             id: 4,
             name: "Kazi Md. Jahid Hasan",
             designation: "Assistant Professor(Mathematics)",
+            teacherCode: "",
             photoURL:
               "https://www.lus.ac.bd/wp-content/uploads/2020/06/jahid-1-scaled.jpg",
             courses: [
@@ -721,6 +725,7 @@ async function run() {
             id: 5,
             name: "Arafat Habib Quraishi",
             designation: "Lecturer",
+            teacherCode: "",
             photoURL:
               "https://www.lus.ac.bd/wp-content/uploads/2022/02/217A8685-scaled.jpg",
             courses: [
@@ -743,6 +748,7 @@ async function run() {
             id: 6,
             name: "Sabia Akter Bhuiyan",
             designation: "Assistant Professor",
+            teacherCode: "",
             photoURL:
               "https://www.lus.ac.bd/wp-content/uploads/2019/11/sabia_akter.jpg",
             courses: [
@@ -760,6 +766,7 @@ async function run() {
             id: 7,
             name: "Rana M Luthfur Rahman Pir",
             designation: "Assistant Professor Proctor (Acting), LU",
+            teacherCode: "",
             photoURL:
               "https://www.lus.ac.bd/wp-content/uploads/2022/03/465386_10150677640915709_891318216_o.jpg",
             courses: [
@@ -781,6 +788,7 @@ async function run() {
             id: 8,
             name: "Prof. Dr. AS. Sikder",
             designation: "Professor",
+            teacherCode: "",
             photoURL:
               "https://www.lus.ac.bd/wp-content/uploads/2022/11/pic.jpg",
             courses: [
@@ -806,6 +814,7 @@ async function run() {
             id: 9,
             name: "Syeda Tamanna Alam Monisha",
             designation: "Lecturer",
+            teacherCode: "",
             photoURL:
               "https://www.lus.ac.bd/wp-content/uploads/2019/11/Syeda-Tajmanna-Alam-Monisha.jpg",
             courses: [
@@ -822,18 +831,26 @@ async function run() {
             ],
           },
         ];
-        const subscribedTeachers = result.subscribedTeachers;
-        const filteredData = allData.filter((obj) =>
-          subscribedTeachers.includes(obj.id)
-        );
-        const notFilteredData = allData.filter(
-          (obj) => !subscribedTeachers.includes(obj.id)
-        );
-        const finalData = {
-          subscribed: filteredData,
-          notsubscribed: notFilteredData,
-        };
-        res.send(finalData);
+        if (result.subscribedTeachers) {
+          const subscribedTeachers = result.subscribedTeachers;
+          const filteredData = allData.filter((obj) =>
+            subscribedTeachers.includes(obj.id)
+          );
+          const notFilteredData = allData.filter(
+            (obj) => !subscribedTeachers.includes(obj.id)
+          );
+          const finalData = {
+            subscribed: filteredData,
+            notsubscribed: notFilteredData,
+          };
+          res.send(finalData);
+        } else {
+          const finalData = {
+            subscribed: [],
+            notsubscribed: allData,
+          };
+          res.send(finalData);
+        }
       } else {
         res.send({ status: "Not applicable" });
       }
@@ -892,6 +909,20 @@ async function run() {
         );
         res.send(result);
         console.log(result);
+      } else {
+        const foundUser = await teacherCollection.findOne(filter, {});
+        const updatedPart = {
+          $set: {
+            profileImgLink: requestedbody.profileImgLink,
+          },
+        };
+        const result = await teacherCollection.updateOne(
+          filter,
+          updatedPart,
+          options
+        );
+        res.send(result);
+        console.log(result);
       }
     });
     // ============= Cover Pic Modify Api
@@ -908,6 +939,20 @@ async function run() {
           },
         };
         const result = await studentCollection.updateOne(
+          filter,
+          updatedPart,
+          options
+        );
+        res.send(result);
+        console.log(result);
+      } else {
+        const foundUser = await teacherCollection.findOne(filter, {});
+        const updatedPart = {
+          $set: {
+            coverImgLink: requestedbody.coverImgLink,
+          },
+        };
+        const result = await teacherCollection.updateOne(
           filter,
           updatedPart,
           options
