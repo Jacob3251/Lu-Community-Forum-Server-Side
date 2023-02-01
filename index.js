@@ -24,6 +24,7 @@ async function run() {
     const reportedPostCollection = client
       .db("GeneralPosts")
       .collection("reportedUserPost");
+    const galleryPostCollection = client.db("GalleryPosts").collection("posts");
     const userCollection = client.db("UserList").collection("users");
     const transportCollection = client
       .db("TransportNotice")
@@ -171,6 +172,22 @@ async function run() {
       const notices = await cursor.toArray();
       res.send(notices);
     });
+    // Gallery post upload
+    app.post("/gallerypost", async (req, res) => {
+      newGalleryPost = req.body;
+      const result = await galleryPostCollection.insertOne(newGalleryPost);
+      res.send(result);
+      console.log("Added new gallery post", result);
+    });
+    app.get("/gallerypost", async (req, res) => {
+      // newGalleryPost = req.body;
+      const query = {};
+      const resultCursor = galleryPostCollection.find(query);
+      const result = await resultCursor.toArray();
+      res.send(result);
+      // console.log("Added new gallery post", result);
+    });
+
     // ==================== All general post releted api's ===================
 
     // for adding new posts
