@@ -570,7 +570,7 @@ async function run() {
       res.send(all);
     });
     // single user information api link using mail
-    app.get("/users/:id", async (req, res) => {
+    app.get("  :id", async (req, res) => {
       const id = req.params.id;
       const emailreg = /^(cse|eee|ce|eng)[_]\d{10}[@]lus[.]ac[.]bd$/.test(id);
       const query = { email: id };
