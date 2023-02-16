@@ -25,6 +25,7 @@ async function run() {
       .db("GeneralPosts")
       .collection("reportedUserPost");
     const galleryPostCollection = client.db("GalleryPosts").collection("posts");
+    const alumniPostCollection = client.db("AlumniPosts").collection("posts");
     const userCollection = client.db("UserList").collection("users");
     const transportCollection = client
       .db("TransportNotice")
@@ -172,6 +173,40 @@ async function run() {
       const notices = await cursor.toArray();
       res.send(notices);
     });
+
+    // alumni post upload
+    app.post("/alumnipost", async (req, res) => {
+      newGalleryPost = req.body;
+      const result = await alumniPostCollection.insertOne(newGalleryPost);
+      res.send(result);
+      console.log("Added new alumni post", result);
+    });
+    app.delete("/alumnipost/:id", async (req, res) => {
+      const postId = req.params.id;
+      const query = { _id: ObjectId(postId) };
+      console.log(postId);
+      const result = await alumniPostCollection.deleteOne(query);
+      if (result.deletedCount === 1) {
+        res.send({
+          staus: "deleted",
+          comment: "Successfully deleted one document.",
+        });
+      } else {
+        res.send({
+          staus: "not deleted",
+          comment: "No documents matched the query. Deleted 0 documents.",
+        });
+      }
+    });
+    app.get("/alumnipost", async (req, res) => {
+      // newGalleryPost = req.body;
+      const query = {};
+      const resultCursor = alumniPostCollection.find(query);
+      const result = await resultCursor.toArray();
+      res.send(result);
+      // console.log("Added new gallery post", result);
+    });
+
     // Gallery post upload
     app.post("/gallerypost", async (req, res) => {
       newGalleryPost = req.body;
@@ -179,6 +214,24 @@ async function run() {
       res.send(result);
       console.log("Added new gallery post", result);
     });
+    app.delete("/gallerypost/:id", async (req, res) => {
+      const postId = req.params.id;
+      const query = { _id: ObjectId(postId) };
+      console.log(postId);
+      const result = await galleryPostCollection.deleteOne(query);
+      if (result.deletedCount === 1) {
+        res.send({
+          staus: "deleted",
+          comment: "Successfully deleted one document.",
+        });
+      } else {
+        res.send({
+          staus: "not deleted",
+          comment: "No documents matched the query. Deleted 0 documents.",
+        });
+      }
+    });
+
     app.get("/gallerypost", async (req, res) => {
       // newGalleryPost = req.body;
       const query = {};
@@ -906,6 +959,45 @@ async function run() {
       }
     });
     // Api for updating users profile and cover pictures
+
+    app.put("/profileupdate", async (req, res) => {
+      const { name, address, phoneNumber, userType, email } = req.body;
+
+      const options = { upsert: true };
+      const filter = { email: email };
+      if (userType === 1) {
+        const updatedPart = {
+          $set: {
+            name: name,
+            address: address,
+            phoneNumber: phoneNumber,
+          },
+        };
+        const result = await studentCollection.updateOne(
+          filter,
+          updatedPart,
+          options
+        );
+        res.send(result);
+        console.log(result);
+      } else {
+        const updatedPart = {
+          $set: {
+            name: name,
+            address: address,
+            phoneNumber: phoneNumber,
+            designation: req.body.designation,
+          },
+        };
+        const result = await teacherCollection.updateOne(
+          filter,
+          updatedPart,
+          options
+        );
+        res.send(result);
+        console.log(result);
+      }
+    });
     // ============ Profile Pic Modify Api
     app.put("/profilepic/modify", async (req, res) => {
       const requestedbody = req.body;
@@ -1047,13 +1139,7 @@ async function run() {
           },
         ],
       ];
-      // console.log("reported post", reportedPosts.length);
-      // console.log("transportation post", transportationPosts.length);
-      // console.log("general post", generalPosts.length);
-      // console.log("selected uni post", selectedUniPosts.length);
-      // console.log("selected dept post", selectedDeptPosts.length);
-      // console.log("selected teacher post", selectedTeacherPosts.length);
-      // console.log("data", data);
+
       res.send(data);
     });
   } finally {
