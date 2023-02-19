@@ -161,6 +161,13 @@ async function run() {
 
     // =============================================
     // ============================ have to be uncommented to dynacally add data(end)
+    app.delete("/transportnotice/:id", async (req, res) => {
+      const postId = req.params.id;
+      const query = { _id: ObjectId(postId) };
+      const result = await transportCollection.deleteOne(query);
+      console.log("delete result", result);
+      res.send(result);
+    });
     app.post("/transportnotice", async (req, res) => {
       const newNotice = req.body;
       const result = await transportCollection.insertOne(newNotice);
