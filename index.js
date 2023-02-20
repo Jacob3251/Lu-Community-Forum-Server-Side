@@ -380,6 +380,14 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/reported", async (req, res) => {
+      const query = {};
+      const reportedPostCursor = reportedPostCollection.find(query);
+      const reportedPosts = await reportedPostCursor.toArray();
+
+      res.send(reportedPosts);
+    });
+
     // for deleting single comments from the individual posts
 
     app.put("/singlecomment/:id", async (req, res) => {
