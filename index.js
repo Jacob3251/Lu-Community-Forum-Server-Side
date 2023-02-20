@@ -388,6 +388,13 @@ async function run() {
       res.send(reportedPosts);
     });
 
+    app.delete("/reportedpost/:id", async (req, res) => {
+      const postId = req.params.id;
+      const query = { _id: ObjectId(postId) };
+      const result = await reportedPostCollection.deleteOne(query);
+      res.send(result);
+    });
+
     // for deleting single comments from the individual posts
 
     app.put("/singlecomment/:id", async (req, res) => {
